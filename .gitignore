@@ -1,0 +1,5 @@
+target/boot.iso
+target/kernel.bin
+target/iso/kernel.bin
+target/obj
+target/obj/*
