@@ -3,3 +3,6 @@ target/kernel.bin
 target/iso/kernel.bin
 target/obj
 target/obj/*
+
+.idea/*
+*.iml

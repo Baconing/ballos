@@ -1,7 +1,7 @@
 /*
  This file is a part of ballos (https://github.com/Baconing/ballos).
 
- Copyright (c) 2023 Brenden "Bacon" Freier <iam@baconing.tech>
+ Copyright (c) 2023-2023 Brenden "Bacon" Freier <iam@baconing.tech>
 
  Permission to use, copy, modify, and/or distribute this software for any
  purpose with or without fee is hereby granted, provided that the above
@@ -16,34 +16,35 @@
  PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <serial.h>
-#include <terminal.h>
+#include <types.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
+#ifndef __BALLOS_VGA
+#define __BALLOS_VGA
+
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
+
+enum VGAColor {
+    VGA_COLOR_BLACK = 0,
+    VGA_COLOR_BLUE = 1,
+    VGA_COLOR_GREEN = 2,
+    VGA_COLOR_CYAN = 3,
+    VGA_COLOR_RED = 4,
+    VGA_COLOR_MAGENTA = 5,
+    VGA_COLOR_BROWN = 6,
+    VGA_COLOR_LIGHT_GREY = 7,
+    VGA_COLOR_DARK_GREY = 8,
+    VGA_COLOR_LIGHT_BLUE = 9,
+    VGA_COLOR_LIGHT_GREEN = 10,
+    VGA_COLOR_LIGHT_CYAN = 11,
+    VGA_COLOR_LIGHT_RED = 12,
+    VGA_COLOR_LIGHT_MAGENTA = 13,
+    VGA_COLOR_LIGHT_BROWN = 14,
+    VGA_COLOR_WHITE = 15,
+};
+
+uint8_t VGAEntryColor(enum VGAColor foreground, enum VGAColor background);
+
+uint16_t VGAEntry(unsigned char uc, uint8_t color);
+
 #endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
-
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
-
-    serialEnable(COM0);
-
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
-    }
-
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
-}

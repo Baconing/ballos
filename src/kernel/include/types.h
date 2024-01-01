@@ -1,7 +1,7 @@
 /*
  This file is a part of ballos (https://github.com/Baconing/ballos).
 
- Copyright (c) 2023 Brenden "Bacon" Freier <iam@baconing.tech>
+ Copyright (c) 2023-2024 Brenden "Bacon" Freier <iam@baconing.tech>
 
  Permission to use, copy, modify, and/or distribute this software for any
  purpose with or without fee is hereby granted, provided that the above
@@ -16,34 +16,27 @@
  PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <serial.h>
-#include <terminal.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
+#ifndef __BALLOS_TYPES
+#define __BALLOS_TYPES
+
+typedef char int8_t;
+typedef unsigned char uint8_t;
+
+typedef short int16_t;
+typedef unsigned short uint16_t;
+
+typedef int int32_t;
+typedef unsigned int uint32_t;
+
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+
+typedef uint32_t size_t;
+
+typedef uint8_t bool;
+
+#define true	1
+#define false	0
+
 #endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
-
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
-
-    serialEnable(COM0);
-
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
-    }
-
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
-}

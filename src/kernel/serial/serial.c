@@ -17,33 +17,42 @@
  */
 
 #include <serial.h>
-#include <terminal.h>
+#include <system.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
-#endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
+void serialSend(int device, char data) {
+    outb(device, data);
+}
 
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
+bool serialTransmitEmpty(int device) {
+    return (inb(device + 5) & 0x20) != 0;
+}
 
-    serialEnable(COM0);
+char serialReceive(int device) {
+    return inb(device);
+}
 
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
+bool serialReceived(int device) {
+    return (inb(device + 5) & 1) != 0;
+}
+
+void serialEnable(int device) {
+    outb(device + 1, 0x00);
+    outb(device + 3, 0x80);
+    outb(device + 0, 0x03);
+    outb(device + 1, 0x00);
+    outb(device + 3, 0x03);
+    outb(device + 2, 0xC7);
+    outb(device + 4, 0x0B);
+    outb(device + 4, 0x1E);
+    outb(device + 0, 0xAE);
+
+    if (inb(device) != 0xAE) {
+        panic("Serial port failed to initialize!");
     }
 
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
+    outb(device + 4, 0x0F);
+}
+
+void serialDisable(int device) {
+    outb(device + 4, 0x00);
 }

@@ -16,34 +16,41 @@
  PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <serial.h>
+#include <system.h>
 #include <terminal.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
-#endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
+uint8_t inb(uint16_t port) {
+    uint8_t ret;
+    asm volatile("inb %1, %0" : "=a"(ret) : "Nd"(port));
+    return ret;
+}
 
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
+void outb(uint16_t port, uint8_t data) {
+    asm volatile("outb %0, %1" : : "a"(data), "Nd"(port));
+}
 
-    serialEnable(COM0);
+uint16_t inw(uint16_t port) {
+    uint16_t ret;
+    asm volatile("inw %1, %0" : "=a"(ret) : "Nd"(port));
+    return ret;
+}
 
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
-    }
+void outw(uint16_t port, uint16_t data) {
+    asm volatile("outw %0, %1" : : "a"(data), "Nd"(port));
+}
 
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
+uint32_t inl(uint16_t port) {
+    uint32_t ret;
+    asm volatile("inl %1, %0" : "=a"(ret) : "Nd"(port));
+    return ret;
+}
+
+void outl(uint16_t port, uint32_t data) {
+    asm volatile("outl %0, %1" : : "a"(data), "Nd"(port));
+}
+
+void panic(char* message) {
+    terminalWriteString(message);
+    asm("cli");
+    asm("hlt");
 }

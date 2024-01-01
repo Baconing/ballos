@@ -16,34 +16,18 @@
  PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <serial.h>
-#include <terminal.h>
+#include <string.h>
+#include <vga.h>
+#include <types.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
+#ifndef __BALLOS_TERMINAL
+#define __BALLOS_TERMINAL
+
+void terminalInitialize();
+void terminalSetColor(uint8_t color);
+void terminalPutEntryAt(char c, uint8_t color, size_t x, size_t y);
+void terminalPutChar(char c);
+void terminalWrite(const char* data, size_t size);
+void terminalWriteString(const char* data);
+
 #endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
-
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
-
-    serialEnable(COM0);
-
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
-    }
-
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
-}

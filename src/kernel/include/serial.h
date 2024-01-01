@@ -16,34 +16,21 @@
  PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <serial.h>
-#include <terminal.h>
+#include <types.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
+#ifndef __BALLOS_SERIAL
+#define __BALLOS_SERIAL
+
+#define COM0 0x3F8
+#define COM1 0x2F8
+#define COM2 0x3E8
+#define COM3 0x2E8
+
+void serialSend(int device, char data);
+bool serialTransmitEmpty(int device);
+char serialReceive(int device);
+bool serialReceived(int device);
+void serialEnable(int device);
+void serialDisable(int device);
+
 #endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
-
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
-
-    serialEnable(COM0);
-
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
-    }
-
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
-}

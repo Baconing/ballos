@@ -1,7 +1,7 @@
 /*
  This file is a part of ballos (https://github.com/Baconing/ballos).
 
- Copyright (c) 2023 Brenden "Bacon" Freier <iam@baconing.tech>
+ Copyright (c) 2024 Brenden "Bacon" Freier <iam@baconing.tech>
 
  Permission to use, copy, modify, and/or distribute this software for any
  purpose with or without fee is hereby granted, provided that the above
@@ -16,34 +16,11 @@
  PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <serial.h>
-#include <terminal.h>
+#include <types.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
-#endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
-
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
-
-    serialEnable(COM0);
-
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
-    }
-
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
+size_t strlen(const char* str) {
+    size_t len = 0;
+    while (str[len])
+        len++;
+    return len;
 }

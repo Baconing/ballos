@@ -16,34 +16,13 @@
  PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <serial.h>
-#include <terminal.h>
+#include <vga.h>
+#include <types.h>
 
-#if defined(__linux__)
-#error "You are not using a crosscompiler"
-#endif
- 
-#if !defined(__i386__)
-#error "This must be crosscompiled to i386"
-#endif
+uint8_t VGAEntryColor(enum VGAColor foreground, enum VGAColor background) {
+    return foreground | background << 4;
+}
 
-void kernel_main(void)
-{
-	terminalInitialize();
- 
-	terminalWriteString("eyyy wsg wellcum to ballos\n");
-
-    serialEnable(COM0);
-
-    char* serialMessage = "serial test\n";
-    for (size_t i = 0; i < strlen(serialMessage); i++) {
-        serialSend(COM0, serialMessage[i]);
-    }
-
-    while (true) {
-        if (!serialReceived(COM0)) continue;
-        char recv = serialReceive(COM0);
-        terminalPutChar(recv);
-        serialSend(COM0, recv);
-    }
+uint16_t VGAEntry(unsigned char uc, uint8_t color) {
+    return (uint16_t) uc | (uint16_t) color << 8;
 }
