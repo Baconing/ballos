@@ -1,6 +1,6 @@
 target/boot.iso
 target/kernel.bin
-target/iso/kernel.bin
+target/iso/boot/kernel.bin
 target/obj
 target/obj/*
 
