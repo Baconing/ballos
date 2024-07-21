@@ -14,20 +14,26 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-all:qemu
+all:libc qemu
 
 qemu:iso
-	qemu-system-i386 -cdrom target/boot.iso
+	qemu-system-i386 -s -cdrom target/boot.iso
 
 iso:kernel
-	cp target/kernel.bin target/iso/boot 
+	cp target/kernel/kernel.bin target/iso/boot
 	grub-mkrescue -o target/boot.iso target/iso
 
 kernel:
 	@$(MAKE) -C src/kernel all
 
+libc:
+	@$(MAKE) -C src/libc all
+
 clean:
-	rm -rf target/obj/*
+	@$(MAKE) -C src/kernel clean
+	@$(MAKE) -C src/libc clean
+	rm -rf target/kernel/*
+	rm -rf target/libc/*
 	rm -rf target/boot.iso
 	rm -rf target/iso/boot/kernel.bin
 	rm -rf target/kernel.bin

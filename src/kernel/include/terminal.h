@@ -17,7 +17,6 @@
  */
 
 #include <string.h>
-#include <vga.h>
 #include <types.h>
 
 #ifndef __BALLOS_TERMINAL

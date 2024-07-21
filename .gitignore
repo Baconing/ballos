@@ -1,8 +1,9 @@
 target/boot.iso
 target/kernel.bin
 target/iso/boot/kernel.bin
-target/obj
-target/obj/*
+target/kernel/*
+target/libc/*
 
 .idea/*
 *.iml
+*.o

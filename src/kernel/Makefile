@@ -14,54 +14,47 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
+TARGET = ../../target/kernel
+TARGET_ARCH = x86
+TARGET_ARCH_DIR = arch/$(TARGET_ARCH)
+
 C = /usr/bin/i686-elf-gcc
 CPP = /usr/bin/i686-elf-g++
 LINKER = /usr/bin/i686-elf-ld
 ASSEMBLER = /usr/bin/i686-elf-as
-CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -c -Iinclude
+CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -c -g -Iinclude
 CPPFLAGS = -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
-LDFLAGS = -T boot/link.ld -ffreestanding -O2 -nostdlib -lgcc
+LDFLAGS = -T arch/$(TARGET_ARCH)/boot/link.ld -ffreestanding -O2 -nostdlib -lgcc
 ASFLAGS =
 
-TARGET = ../../target
+ARCH_OBJS =\
+	$(TARGET_ARCH_DIR)/boot/boot.o \
+	$(TARGET_ARCH_DIR)/cpu/system.o \
+	$(TARGET_ARCH_DIR)/vga/vga.o \
 
 OBJS =\
- $(TARGET)/obj/boot.o \
- $(TARGET)/obj/kernel.o \
- $(TARGET)/obj/system.o \
- $(TARGET)/obj/serial.o \
- $(TARGET)/obj/terminal.o \
- $(TARGET)/obj/vga.o \
- $(TARGET)/obj/string.o \
+	$(ARCH_OBJS) \
+	kernel.o \
+	serial/serial.o \
+ 	string/string.o \
+	terminal/terminal.o
 
-all:$(OBJS)
+.PHONY: all clean
+
+all:kernel.bin
+
+clean:
+	rm -rf **/*.o
+	rm -rf $(TARGET)/kernel.bin
+	rm -rf $(OBJS)
+
+kernel.bin:$(OBJS)
 	mkdir -p $(TARGET)
 	$(C) $(LDFLAGS) -o $(TARGET)/kernel.bin $(OBJS)
 
-$(TARGET)/obj/boot.o:boot/boot.S
-	mkdir -p $(TARGET)/obj/
-	$(ASSEMBLER) $(ASFLAGS) -o $(TARGET)/obj/boot.o boot/boot.S
-
-$(TARGET)/obj/kernel.o:kernel.c
-	mkdir -p $(TARGET)/obj/
-	$(C) $(CFLAGS) -o $(TARGET)/obj/kernel.o kernel.c
-
-$(TARGET)/obj/system.o:cpu/system.c
-	mkdir -p $(TARGET)/obj/
-	$(C) $(CFLAGS) -o $(TARGET)/obj/system.o cpu/system.c
-
-$(TARGET)/obj/serial.o:serial/serial.c
-	mkdir -p $(TARGET)/obj/
-	$(C) $(CFLAGS) -o $(TARGET)/obj/serial.o serial/serial.c
-
-$(TARGET)/obj/terminal.o:terminal/terminal.c
-	mkdir -p $(TARGET)/obj/
-	$(C) $(CFLAGS) -o $(TARGET)/obj/terminal.o terminal/terminal.c
-
-$(TARGET)/obj/vga.o:vga/vga.c
-	mkdir -p $(TARGET)/obj/
-	$(C) $(CFLAGS) -o $(TARGET)/obj/vga.o vga/vga.c
-
-$(TARGET)/obj/string.o:string/string.c
-	mkdir -p $(TARGET)/obj/
-	$(C) $(CFLAGS) -o $(TARGET)/obj/string.o string/string.c
+.c.o:
+	$(C) $(CFLAGS) -o $@ $<
+.cpp.o:
+	$(CPP) $(CPPFLAGS) -o $@ $<
+.S.o:
+	$(ASSEMBLER) $(ASFLAGS) -o $@ $<
