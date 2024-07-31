@@ -1,8 +1,9 @@
-#include <stdint.h>
-#include <stdbool.h>
-
 #ifndef IDT_H
 #define IDT_H
+
+#include <stdint.h>
+
+#define IDT_MAX_DESCRIPTORS 256
 
 typedef struct {
     uint16_t    isr_low;      // The lower 16 bits of the ISR's address
@@ -22,15 +23,10 @@ typedef struct {
     uint64_t	base;
 } __attribute__((packed)) idtr_t;
 
-#define IDT_SIZE 256
-
-static bool vectors[IDT_SIZE];
-
-extern void* isr_stub_table[];
+static idtr_t idtr;
 
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags);
-
 void idt_init(void);
-static idtr_t idtr;
+void idt_reload(void);
 
 #endif //IDT_H

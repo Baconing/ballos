@@ -1,7 +1,11 @@
-#include <stdint.h>
+//
+// Created by bacon on 7/31/24.
+//
 
 #ifndef REGISTERS_H
 #define REGISTERS_H
+
+#include <stdint.h>
 
 typedef struct {
     uint64_t r15;
@@ -28,6 +32,5 @@ typedef struct {
     uint64_t rsp;
     uint64_t ss;
 } __attribute__((packed)) registers_t;
-
 
 #endif //REGISTERS_H

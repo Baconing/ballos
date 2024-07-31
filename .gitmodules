@@ -2,3 +2,6 @@
 	path = limine
 	url = https://github.com/limine-bootloader/limine.git
 	branch = v7.x-binary
+[submodule "kernel/fb/terminal"]
+	path = kernel/fb/terminal
+	url = https://github.com/mintsuki/flanterm

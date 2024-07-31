@@ -1,6 +1,8 @@
 #include <serial.h>
+#include <terminal.h>
 
 int serial_init() {
+    terminal_write("[SERIAL] Initalizing Serial...");
     outb(PORT + 1, 0x00);
     outb(PORT + 3, 0x80);
     outb(PORT + 0, 0x03);
@@ -12,11 +14,13 @@ int serial_init() {
     outb(PORT + 0, 0xAE);
 
     if (inb(PORT + 0) != 0xAE) {
+        terminal_write("ERROR\n");
         return 1;
     }
 
     outb(PORT + 4, 0x0F);
 
+    terminal_write("OK\n");
     return 0;
 }
 

@@ -1,3 +1,5 @@
+global isr_wrapper
+
 %macro pushall 0
 
 push rax
@@ -40,16 +42,12 @@ pop rax
 
 extern isr_handle
 
-; Common handler for the ISRs
-isr_common_format:
-	pushall
-	cld
-	mov rdi, rsp
-	xor rbp, rbp
-	call isr_handle
-	popall
-	add rsp, 24
-	iretq
+isr_common:
+    pushall
+    cld
+    call isr_handle
+    popall
+    iretq
 
 %macro isr 1
 
@@ -57,8 +55,7 @@ global isr%1
 isr%1:
 	push 0
 	push %1
-	push fs
-	jmp isr_common_format
+	jmp isr_common
 
 %endmacro
 
@@ -67,14 +64,12 @@ isr%1:
 global isr%1
 isr%1:
 	push %1
-	push fs
-	jmp isr_common_format
+	jmp isr_common
 
 %endmacro
 
 %define has_errcode(i) (i == 8 || (i >= 10 && i <= 14) || i == 17 || i == 21 || i == 29 || i == 30)
 
-; Define ISRs
 %assign i 0
 %rep 256
 %if !has_errcode(i)
