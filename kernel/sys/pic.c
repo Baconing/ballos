@@ -1,13 +1,9 @@
-//
-// Created by bacon on 7/31/24.
-//
-
-#include <pic.h>
-#include <io.h>
+#include <sys/pic.h>
+#include <io/ports.h>
 #include <terminal.h>
 
 void pic_init(void) {
-    terminal_write("[PIC] Initializing PIC...");
+    terminal_write("[SYS/PIC] Initializing PIC...");
 	outb(0x20, 0x11);
 	outb(0xA0, 0x11);
 	outb(0x21, 0x20);
@@ -22,7 +18,7 @@ void pic_init(void) {
 }
 
 void pic_disable(void) {
-    terminal_write("[PIC] Disabling PIC...");
+    terminal_write("[SYS/PIC] Disabling PIC...");
     outb(0xA1, 0xFF);
     outb(0x21, 0xFF);
     terminal_write("OK\n");

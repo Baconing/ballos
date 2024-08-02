@@ -14,4 +14,4 @@ void fb_write_char(char c);
 bool fb_available();
 struct limine_framebuffer *fb_info();
 
-#endif //FB_H
+#endif

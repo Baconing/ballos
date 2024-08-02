@@ -1,7 +1,7 @@
-#include <idt.h>
-#include <isr.h>
+#include <sys/idt.h>
+#include <sys/isr.h>
 #include <terminal.h>
-#include <string.h>
+#include <klibc/string.h>
 
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
     idt_entry_t* descriptor = &idt[vector];
@@ -16,10 +16,10 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
 }
 
 void idt_init() {
-    terminal_write("[IDT] Setting IDTR base...");
+    terminal_write("[SYS/IDT] Setting IDTR base...");
     idtr.base = (uintptr_t)&idt[0];
 	terminal_write("OK\n");
-    terminal_write("[IDT] Setting IDTR Limit...");
+    terminal_write("[SYS/IDT] Setting IDTR Limit...");
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 	terminal_write("OK\n");
 
@@ -27,7 +27,7 @@ void idt_init() {
 }
 
 void idt_reload() {
-	terminal_write("[IDT] (Re)loading IDT...");
+	terminal_write("[SYS/IDT] (Re)loading IDT...");
     __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
     __asm__ volatile ("sti"); // set the interrupt flag
 	terminal_write("OK\n");

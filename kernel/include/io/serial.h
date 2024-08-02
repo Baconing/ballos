@@ -1,7 +1,5 @@
-#include <io.h>
-
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef IO_SERIAL_H
+#define IO_SERIAL_H
 
 #define PORT 0x3f8
 
@@ -14,4 +12,4 @@ int is_transmit_empty(void);
 void write_serial(char character);
 void write_string_serial(const char *string);
 
-#endif //SERIAL_H
+#endif

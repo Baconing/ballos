@@ -1,7 +1,7 @@
-#include <fb.h>
+#include <video/fb.h>
 #include <terminal.h>
-#include <string.h>
-#include <hcf.h>
+#include <klibc/string.h>
+#include <sys/hcf.h>
 #include "terminal/flanterm.h"
 #include "terminal/backends/fb.h"
 
@@ -15,7 +15,7 @@ static volatile struct limine_framebuffer_request framebuffer_request = {
 };
 
 void fb_init() {
-    terminal_write("[FB] Initializing framebuffer...\n");
+    terminal_write("[VIDEO/FB] Initializing framebuffer...\n");
     if (framebuffer_request.response == NULL
      || framebuffer_request.response->framebuffer_count < 1) {
         terminal_write("ERROR (no usable framebuffer)\n");

@@ -1,8 +1,9 @@
-#include <serial.h>
+#include <io/serial.h>
+#include <io/ports.h>
 #include <terminal.h>
 
 int serial_init() {
-    terminal_write("[SERIAL] Initalizing Serial...");
+    terminal_write("[IO/SERIAL] Initalizing Serial...");
     outb(PORT + 1, 0x00);
     outb(PORT + 3, 0x80);
     outb(PORT + 0, 0x03);

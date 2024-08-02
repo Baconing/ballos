@@ -1,21 +1,10 @@
-#include <isr.h>
-#include <idt.h>
+#include <sys/isr.h>
+#include <sys/idt.h>
 #include <terminal.h>
-#include <string.h>
+#include <klibc/string.h>
 
 void isr_init(void) {
-	terminal_write("[ISR] Installing ISRs...");
-	idt_set_descriptor(0, isr0, 0x8E);
-	idt_set_descriptor(1, isr1, 0x8E);
-	idt_set_descriptor(2, isr2, 0x8E);
-	idt_set_descriptor(3, isr3, 0x8E);
-	idt_set_descriptor(4, isr4, 0x8E);
-	idt_set_descriptor(5, isr5, 0x8E);
-	idt_set_descriptor(6, isr6, 0x8E);
-	idt_set_descriptor(7, isr7, 0x8E);
-	idt_set_descriptor(8, isr8, 0x8E);
-	idt_set_descriptor(9, isr9, 0x8E);
-	idt_set_descriptor(10, isr10, 0x8E);
+	terminal_write("[SYS/ISR] Installing ISRs...");
 	terminal_write("OK\n");
 	idt_reload();
 }

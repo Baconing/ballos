@@ -1,7 +1,3 @@
-//
-// Created by bacon on 7/31/24.
-//
-
 #ifndef REGISTERS_H
 #define REGISTERS_H
 
@@ -33,4 +29,4 @@ typedef struct {
     uint64_t ss;
 } __attribute__((packed)) registers_t;
 
-#endif //REGISTERS_H
+#endif

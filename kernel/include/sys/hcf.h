@@ -1,9 +1,5 @@
-//
-// Created by bacon on 7/28/24.
-//
-
-#ifndef HCF_H
-#define HCF_H
+#ifndef SYS_HCF_H
+#define SYS_HCF_H
 
 __attribute__((noreturn))
 static void hcf(void) {
@@ -13,4 +9,4 @@ static void hcf(void) {
     }
 }
 
-#endif //HCF_H
+#endif

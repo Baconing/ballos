@@ -1,11 +1,7 @@
-//
-// Created by bacon on 7/31/24.
-//
-
 #ifndef TERMINAL_H
 #define TERMINAL_H
 
 void terminal_write(const char *string);
 void terminal_write_char(char c);
 
-#endif //TERMINAL_H
+#endif

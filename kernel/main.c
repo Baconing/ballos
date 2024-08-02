@@ -2,13 +2,15 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <limine.h>
-#include <fb.h>
-#include <serial.h>
-#include <hcf.h>
+#include <video/fb.h>
+#include <io/serial.h>
+#include <sys/hcf.h>
 #include <terminal.h>
-#include <idt.h>
-#include <isr.h>
-#include <pic.h>
+#include <sys/idt.h>
+#include <sys/isr.h>
+#include <sys/pic.h>
+#include <mm/paging.h>
+#include <string.h>
 
 __attribute__((used, section(".requests")))
 static volatile LIMINE_BASE_REVISION(2);
@@ -84,11 +86,10 @@ void _start(void) {
     idt_init();
     isr_init();
     pic_init();
+    paging_init();
 
     struct limine_framebuffer *fb = fb_info();
 
-
-    terminal_write("Triggering interrupt 0x00...\n");
     //__asm__ volatile ("int $0x00");
 
     hcf();
