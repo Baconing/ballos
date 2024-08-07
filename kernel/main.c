@@ -6,6 +6,7 @@
 #include <io/serial.h>
 #include <sys/hcf.h>
 #include <terminal.h>
+#include <sys/fpu.h>
 #include <sys/idt.h>
 #include <sys/isr.h>
 #include <sys/pic.h>
@@ -85,6 +86,7 @@ void _start(void) {
     serial_init();
     fb_init();
 
+    fpu_init();
     idt_init();
     isr_init();
     pic_init();
@@ -101,12 +103,17 @@ void _start(void) {
     if (ptr == NULL) {
         terminal_write("ERROR (kmalloc returned NULL)\n");
     } else {
-        terminal_write("OK.\n");
+        terminal_write("OK\n");
     }
 
     terminal_write("[TEST/KFREE] Testing kfree...");
     kfree(ptr);
-    terminal_write("OK.\n");
+    terminal_write("OK\n");
+
+    terminal_write("[TEST/FPU] Testing FPU...");
+    float a = 1.0, b = 2.0, c;
+    c = a + b;
+    terminal_write("OK\n");
 
     //__asm__ volatile ("int $0x00");
 
