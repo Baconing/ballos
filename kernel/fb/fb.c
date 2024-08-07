@@ -8,11 +8,23 @@
 static struct limine_framebuffer *framebuffer;
 static struct flanterm_context *terminal_ctx;
 
+static uint32_t default_bg = 0x0000FF;
+static uint32_t default_fg = 0xFFFFFF;
+
 __attribute__((used, section(".requests")))
 static volatile struct limine_framebuffer_request framebuffer_request = {
     .id = LIMINE_FRAMEBUFFER_REQUEST,
     .revision = 0
 };
+
+void blank_fb(uint32_t color) {
+    volatile uint32_t *fb_ptr = framebuffer->address;
+    for (size_t y = 0; y < framebuffer->height; y++) {
+        for (size_t x = 0; x < framebuffer->width; x++) {
+            fb_ptr[y * (framebuffer->pitch / 4) + x] = color;
+        }
+    }
+}
 
 void fb_init() {
     terminal_write("[VIDEO/FB] Initializing framebuffer...\n");
@@ -22,6 +34,7 @@ void fb_init() {
     }
 
     framebuffer = framebuffer_request.response->framebuffers[0];
+    blank_fb(default_bg);
 
     terminal_ctx = flanterm_fb_init(
         NULL,
@@ -32,8 +45,8 @@ void fb_init() {
         framebuffer->blue_mask_size, framebuffer->blue_mask_shift,
         NULL,
         NULL, NULL,
-        NULL, NULL,
-        NULL, NULL,
+        &default_bg, &default_fg,
+        &default_bg, &default_fg,
         NULL, 0, 0, 1,
         0, 0,
         0
@@ -41,14 +54,6 @@ void fb_init() {
     terminal_write("OK\n");
 }
 
-void blank_fb() {
-    volatile uint32_t *fb_ptr = framebuffer->address;
-    for (size_t y = 0; y < framebuffer->height; y++) {
-        for (size_t x = 0; x < framebuffer->width; x++) {
-            fb_ptr[y * (framebuffer->pitch / 4) + x] = 0;
-        }
-    }
-}
 
 void place_pixel_fb(size_t x, size_t y, uint32_t color) {
     volatile uint32_t *fb_ptr = framebuffer->address;
