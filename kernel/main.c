@@ -113,7 +113,11 @@ void _start(void) {
     terminal_write("[TEST/FPU] Testing FPU...");
     float a = 1.0, b = 2.0, c;
     c = a + b;
-    terminal_write("OK\n");
+    if (c != 3.0) {
+        terminal_write("ERROR\n");
+    } else {
+        terminal_write("OK\n");
+    }
 
     //__asm__ volatile ("int $0x00");
 
