@@ -71,10 +71,10 @@ override OBJ := $(addprefix obj/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o) $(NASMFILE
 override HEADER_DEPS := $(addprefix obj/,$(CFILES:.c=.c.d) $(ASFILES:.S=.S.d))
 
 .PHONY: all
-all: qemu
+all: obj/${IMAGE}
 
-qemu: obj/${IMAGE}
-	qemu-system-x86_64 -cdrom obj/${IMAGE}
+qemu-dbg: obj/${IMAGE}
+	qemu-system-x86_64 -s -cdrom obj/${IMAGE}
 
 obj/${IMAGE}: obj/$(KERNEL)
 	mkdir -p obj/iso/boot/limine

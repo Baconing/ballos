@@ -23,93 +23,44 @@ size_t strlen(const char *s) {
     return s - a;
 }
 
-char *ltoa(int64_t value, char *str, int base) {
-    char *rc;
-    char *ptr;
-    char *low;
-    // Check for supported base.
-    if (base < 2 || base > 36) {
-        *str = '\0';
-        return str;
-    }
-    rc = ptr = str;
-    // Set '-' for negative decimals.
-    if (value < 0 && base == 10) {
-        *ptr++ = '-';
-    }
-    // Remember where the numbers start.
-    low = ptr;
-    // The actual conversion.
+char* ultoa(unsigned long val, char* s, int radix) {
+    static const char dig[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+    char* p, *q;
+
+    q = s;
     do {
-        // Modulo is negative for negative value. This trick makes abs()
-        // unnecessary.
-        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnop"
-                 "qrstuvwxyz"[35 + value % base];
-        value /= base;
-    } while (value);
-    // Terminating the string.
-    *ptr-- = '\0';
-    // Invert the numbers.
-    while (low < ptr) {
-        char tmp = *low;
-        *low++ = *ptr;
-        *ptr-- = tmp;
+        *q++ = dig[val % radix];
+        val /= radix;
+    } while (val);
+    *q = '\0';
+
+    // Reverse the string (but leave the \0)
+    p = s;
+    q--;
+
+    while (p < q) {
+        char c = *p;
+        *p++ = *q;
+        *q-- = c;
     }
-    return rc;
+
+    return s;
 }
 
-char *ultoa(uint64_t value, char *str, int base) {
-    char *rc;
-    char *ptr;
-    char *low;
-    // Check for supported base.
-    if (base < 2 || base > 36) {
-        *str = '\0';
-        return str;
-    }
-    rc = ptr = str;
-    // Remember where the numbers start.
-    low = ptr;
-    // The actual conversion.
-    do {
-        *ptr++ = "0123456789abcdefghijklmnop"
-                 "qrstuvwxyz"[value % base];
-        value /= base;
-    } while (value);
-    // Terminating the string.
-    *ptr-- = '\0';
-    // Invert the numbers.
-    while (low < ptr) {
-        char tmp = *low;
-        *low++ = *ptr;
-        *ptr-- = tmp;
-    }
-    return rc;
+char* utoa(int val, char* s, int radix) {
+    return ultoa(val, s, radix);
 }
 
-int64_t atol(const char *string) {
-    long num = 0;
-    int i = 0, sign = 1;
-
-    // skip white space characters
-    while (string[i] == ' ' || string[i] == '\n' || string[i] == '\t') {
-        i++;
+char* ltoa(long val, char* s, int radix) {
+    if (val < 0) {
+        *s = '-';
+        utoa(-val, s + 1, radix);
+    } else {
+        utoa(val, s, radix);
     }
+    return s;
+}
 
-    // note sign of the number
-    if (string[i] == '+' || string[i] == '-') {
-        if (string[i] == '-') {
-            sign = -1;
-        }
-        i++;
-    }
-
-    // run till the end of the string is reached, or the
-    // current character is non-numeric
-    while (string[i] && (string[i] >= '0' && string[i] <= '9')) {
-        num = num * 10 + (string[i] - '0');
-        i++;
-    }
-
-    return sign * num;
+char* itoa(int val, char* s, int radix) {
+    return ltoa(val, s, radix);
 }

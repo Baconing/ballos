@@ -25,5 +25,4 @@ void paging_init() {
     }
 
     terminal_write("OK\n");
-
 }

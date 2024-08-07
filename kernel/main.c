@@ -10,6 +10,8 @@
 #include <sys/isr.h>
 #include <sys/pic.h>
 #include <mm/paging.h>
+#include <mm/mmap.h>
+#include <mm/mem.h>
 #include <string.h>
 
 __attribute__((used, section(".requests")))
@@ -87,8 +89,24 @@ void _start(void) {
     isr_init();
     pic_init();
     paging_init();
+    mmap_init();
+    mem_init();
 
     struct limine_framebuffer *fb = fb_info();
+
+    terminal_write("[TEST/KMALLOC] Testing kmalloc...");
+    int *ptr;
+    ptr = (int *)kmalloc(sizeof(int));
+
+    if (ptr == NULL) {
+        terminal_write("ERROR (kmalloc returned NULL)\n");
+    } else {
+        terminal_write("OK.\n");
+    }
+
+    terminal_write("[TEST/KFREE] Testing kfree...");
+    kfree(ptr);
+    terminal_write("OK.\n");
 
     //__asm__ volatile ("int $0x00");
 
