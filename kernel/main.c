@@ -118,6 +118,6 @@ void _start(void) {
         terminal_write("OK\n");
     }
 
-
+    asm("sti");
     hcf();
 }

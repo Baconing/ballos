@@ -43,7 +43,6 @@ gdt_ptr:
   dw gdt_end - gdt - 1
   dq gdt
 
-
 CODE_SEG equ kernel_code_64 - gdt
 DATA_SEG equ kernel_data - gdt
 
@@ -57,7 +56,7 @@ gdt_init:
   push CODE_SEG
   push flush
   iretq
-  flush:
+flush:
   mov ax, DATA_SEG
   mov ds, ax
   mov es, ax

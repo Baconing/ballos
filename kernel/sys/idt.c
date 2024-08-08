@@ -29,7 +29,6 @@ void idt_init() {
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 	terminal_write("OK\n");
 
-	terminal_write_dec(sizeof(idtr));
 	idt_reload();
 }
 
