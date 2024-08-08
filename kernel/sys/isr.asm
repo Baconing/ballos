@@ -40,12 +40,12 @@ pop rax
 
 %endmacro
 
-extern isr_handle
+extern isr_handler
 
 isr_common:
     pushall
     cld
-    call isr_handle
+    call isr_handler
     popall
     iretq
 
@@ -72,10 +72,10 @@ isr%1:
 
 %assign i 0
 %rep 256
-%if !has_errcode(i)
-	isr i
-%else
+%if has_errcode(i)
 	error_isr i
+%else
+	isr i
 %endif
 %assign i i + 1
 %endrep

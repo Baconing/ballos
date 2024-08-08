@@ -2,18 +2,18 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <limine.h>
-#include <video/fb.h>
 #include <io/serial.h>
+#include <video/fb.h>
+#include <input/keyboard.h>
 #include <sys/hcf.h>
-#include <terminal.h>
-#include <sys/fpu.h>
-#include <sys/idt.h>
+#include <sys/irq.h>
 #include <sys/isr.h>
-#include <sys/pic.h>
+#include <sys/idt.h>
+#include <sys/fpu.h>
 #include <mm/paging.h>
 #include <mm/mmap.h>
 #include <mm/mem.h>
-#include <string.h>
+#include <terminal.h>
 
 __attribute__((used, section(".requests")))
 static volatile LIMINE_BASE_REVISION(2);
@@ -89,12 +89,11 @@ void _start(void) {
     fpu_init();
     idt_init();
     isr_init();
-    pic_init();
-    paging_init();
+    irq_init();
+    keyboard_init();
+    //paging_init();
     mmap_init();
     mem_init();
-
-    struct limine_framebuffer *fb = fb_info();
 
     terminal_write("[TEST/KMALLOC] Testing kmalloc...");
     int *ptr;
@@ -119,7 +118,6 @@ void _start(void) {
         terminal_write("OK\n");
     }
 
-    //__asm__ volatile ("int $0x00");
 
     hcf();
 }

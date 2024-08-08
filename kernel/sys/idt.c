@@ -3,15 +3,21 @@
 #include <terminal.h>
 #include <klibc/string.h>
 
+
+__attribute__((aligned(0x10)))
+static idt_entry_t idt[256];
+
+static idtr_t idtr;
+
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
     idt_entry_t* descriptor = &idt[vector];
 
-    descriptor->isr_low        = (uint64_t)isr & 0xFFFF;
-    descriptor->kernel_cs      = 0x08;
+    descriptor->offset_1       = (uint64_t)isr & 0xFFFF;
+    descriptor->selector       = 8;
     descriptor->ist            = 0;
-    descriptor->attributes     = flags;
-    descriptor->isr_mid        = ((uint64_t)isr >> 16) & 0xFFFF;
-    descriptor->isr_high       = ((uint64_t)isr >> 32) & 0xFFFFFFFF;
+    descriptor->attributes     = flags | 0x60;
+    descriptor->offset_2       = ((uint64_t)isr >> 16) & 0xFFFF;
+    descriptor->offset_3       = ((uint64_t)isr >> 32) & 0xFFFFFFFF;
     descriptor->reserved       = 0;
 }
 
@@ -23,12 +29,13 @@ void idt_init() {
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 	terminal_write("OK\n");
 
+	terminal_write_dec(sizeof(idtr));
 	idt_reload();
 }
 
 void idt_reload() {
 	terminal_write("[SYS/IDT] (Re)loading IDT...");
-    __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
-    __asm__ volatile ("sti"); // set the interrupt flag
+    idtr_t idt_ptr = {sizeof(idt) - 1, (uint64_t)idt};
+    __asm__ volatile ("lidtq %0" : : "m"(idt_ptr)); // load the new IDT
 	terminal_write("OK\n");
 }

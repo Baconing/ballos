@@ -6,24 +6,19 @@
 #define IDT_MAX_DESCRIPTORS 256
 
 typedef struct {
-    uint16_t    isr_low;
-    uint16_t    kernel_cs;
+    uint16_t    offset_1;
+    uint16_t    selector;
     uint8_t	    ist;
     uint8_t     attributes;
-    uint16_t    isr_mid;
-    uint32_t    isr_high;
+    uint16_t    offset_2;
+    uint32_t    offset_3;
     uint32_t    reserved;
 } __attribute__((packed)) idt_entry_t;
-
-__attribute__((aligned(0x10)))
-static idt_entry_t idt[256];
 
 typedef struct {
     uint16_t	limit;
     uint64_t	base;
 } __attribute__((packed)) idtr_t;
-
-static idtr_t idtr;
 
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags);
 void idt_init(void);
