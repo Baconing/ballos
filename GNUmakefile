@@ -74,7 +74,7 @@ override HEADER_DEPS := $(addprefix obj/,$(CFILES:.c=.c.d) $(ASFILES:.S=.S.d))
 all: obj/${IMAGE}
 
 qemu-dbg: obj/${IMAGE}
-	qemu-system-x86_64 -s -cdrom obj/${IMAGE}
+	qemu-system-x86_64 -s -cdrom obj/${IMAGE} -serial stdio
 
 obj/${IMAGE}: obj/$(KERNEL)
 	mkdir -p obj/iso/boot/limine

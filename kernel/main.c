@@ -10,6 +10,7 @@
 #include <sys/isr.h>
 #include <sys/idt.h>
 #include <sys/fpu.h>
+#include <sys/gdt.h>
 #include <mm/paging.h>
 #include <mm/mmap.h>
 #include <mm/mem.h>
@@ -87,6 +88,7 @@ void _start(void) {
     fb_init();
 
     fpu_init();
+    gdt_init();
     idt_init();
     isr_init();
     irq_init();
@@ -119,5 +121,8 @@ void _start(void) {
     }
 
     asm("sti");
+
+//    asm ("int $0x0");
+
     hcf();
 }

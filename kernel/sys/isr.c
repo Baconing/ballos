@@ -385,5 +385,15 @@ void isr_init(void) {
 		isr_install(i, exception_handler);
     }
 
+    for (size_t i = 0; i < 32; i++) {
+        if (isrs[i].handler != stubs[i]) {
+            terminal_write("ISR ");
+            terminal_write_dec(i);
+            terminal_write(" is not installed\n");
+        }
+    }
+
     terminal_write("OK\n");
+
+    idt_reload();
 }
