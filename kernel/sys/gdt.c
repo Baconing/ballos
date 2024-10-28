@@ -21,7 +21,6 @@ struct gdtr {
 } __attribute__((packed));
 
 struct gdtr gdt = { 0 };
-struct gdt_ptr gdtp = { 0 };
 
 extern void gdt_flush();
 
@@ -38,13 +37,12 @@ void gdt_init() {
     gdt.entries[4].access = 0b11110010;
     gdt.entries[4].granularity = 0b11001111;
 
-    gdtp.limit = sizeof(gdt) - 1;
-    gdtp.base = (uint64_t)&gdt;
+    struct gdt_ptr gdtp = {sizeof(gdt) - 1, (uint64_t)&gdt};
 
     terminal_write("OK\n");
     terminal_write("[SYS/GDT] Flushing GDT to CPU...");
 
-    gdt_flush();
+    __asm__ volatile("lgdtq %0" : : "m"(gdtp));
 
     terminal_write("OK\n");
 }

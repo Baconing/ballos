@@ -38,19 +38,29 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
 }
 
 void idt_init() {
-    terminal_write("[SYS/IDT] Setting IDTR base...");
+    terminal_write("[SYS/IDT] Initalizing IDT Pointer...");
     idtr.base = (uintptr_t)&idt[0];
-	terminal_write("OK\n");
-    terminal_write("[SYS/IDT] Setting IDTR Limit...");
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
-	terminal_write("OK\n");
+    terminal_write("OK\n");
 
-	idt_reload();
+    idt_reload();
 }
 
 void idt_reload() {
-	terminal_write("[SYS/IDT] (Re)loading IDT...");
-    idtr_t idt_ptr = {sizeof(idt) - 1, (uint64_t)idt};
-    __asm__ volatile ("lidtq %0" : : "m"(idt_ptr)); // load the new IDT
-	terminal_write("OK\n");
+    terminal_write("[SYS/IDT] (Re)loading IDT...\n");
+    for (int i = 0; i < IDT_MAX_DESCRIPTORS; i++) {
+        terminal_write("\t[SYS/IDT] IDT Descriptor ");
+        terminal_write_dec(i);
+        terminal_write(": ");
+        terminal_write("Selector: ");
+        terminal_write_hex(idt[i].selector);
+        terminal_write(" IST: ");
+        terminal_write_hex(idt[i].ist);
+        terminal_write(" Attributes: ");
+        terminal_write_hex(idt[i].attributes);
+        terminal_write("\n");
+    }
+    //idtr_t idt_ptr = {sizeof(idt) - 1, (uint64_t)idt};
+    __asm__ volatile ("lidtq %0" : : "m"(idtr)); // load the new IDT
+    terminal_write("OK\n");
 }

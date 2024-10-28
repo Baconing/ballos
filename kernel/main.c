@@ -80,6 +80,8 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 }
 
 void _start(void) {
+    asm("cli");
+
     if (LIMINE_BASE_REVISION_SUPPORTED == false) {
         hcf();
     }
@@ -111,6 +113,7 @@ void _start(void) {
     kfree(ptr);
     terminal_write("OK\n");
 
+    /*
     terminal_write("[TEST/FPU] Testing FPU...");
     float a = 1.0, b = 2.0, c;
     c = a + b;
@@ -119,10 +122,11 @@ void _start(void) {
     } else {
         terminal_write("OK\n");
     }
+    */
 
     asm("sti");
 
-//    asm ("int $0x0");
+    asm ("int $0x02");
 
     hcf();
 }

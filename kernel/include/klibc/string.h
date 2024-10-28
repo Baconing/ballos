@@ -1,7 +1,7 @@
 #ifndef KLIBC_STRING_H
 #define KLIBC_STRING_H
 
-#include <string.h>
+//#include <string.h>
 #include <stdint.h>
 #include <stddef.h>
 
