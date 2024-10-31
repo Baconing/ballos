@@ -67,7 +67,7 @@ void gdt_init() {
     gdt.entries[2].flags = 0b11001111; // 4 bytes padding. 
 
     // GDT Flushing.
-    gdtp.limit = (sizeof(gdt) - 1);
+    gdtp.limit = sizeof(gdt) - 1;
     gdtp.base = (uint64_t)&gdt;
 
     terminal_write("OK\n");
