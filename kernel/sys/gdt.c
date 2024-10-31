@@ -36,11 +36,11 @@ struct gdt_ptr {
 } __attribute__((packed));
 
 struct gdtr {
-    struct gdt_entry entries[5];
+    struct gdt_entry entries[3];
 } __attribute__((packed));
 
-struct gdtr gdt = { 0 };
-struct gdt_ptr gdtp;
+struct gdtr __attribute__((aligned(16))) gdt = { 0 };
+struct gdt_ptr __attribute__((aligned(16))) gdtp;
 extern void gdt_flush();
 
 void gdt_init() {
@@ -67,7 +67,7 @@ void gdt_init() {
     gdt.entries[2].flags = 0b11001111; // 4 bytes padding. 
 
     // GDT Flushing.
-    gdtp.limit = sizeof(gdt) - 1;
+    gdtp.limit = (sizeof(gdt) - 1);
     gdtp.base = (uint64_t)&gdt;
 
     terminal_write("OK\n");
