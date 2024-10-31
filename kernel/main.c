@@ -92,7 +92,7 @@ void _start(void) {
     fpu_init();
     gdt_init();
     idt_init();
-    isr_init();
+    //isr_init();
     irq_init();
     keyboard_init();
     //paging_init();
@@ -132,7 +132,16 @@ void _start(void) {
     asm volatile ("movq %%rsp, %0" : "=r" (rsp_value)); // Get current rsp
     rsp_value &= -16;                                     // Align it
     asm volatile ("movq %0, %%rsp" : : "r" (rsp_value)); // Set the aligned rsp
-    asm ("int $0x02");
+    
+    asm(
+
+    "push %rdi\n"
+    "mov $1,%rdi\n"
+    "call terminal_write_dec\n"
+    "pop %rdi"
+    );
+
+    asm volatile("int $0");
 
     hcf();
 }

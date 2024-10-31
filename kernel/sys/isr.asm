@@ -51,33 +51,7 @@ isr_common:
     popall
     iretq
 
-%macro isr 1
-
-global isr%1
-isr%1:
+isr0:
 	push 0
-	push %1
 	jmp isr_common
-
-%endmacro
-
-%macro error_isr 1
-
-global isr%1
-isr%1:
-	push %1
-	jmp isr_common
-
-%endmacro
-
-%define has_errcode(i) (i == 8 || (i >= 10 && i <= 14) || i == 17 || i == 21 || i == 29 || i == 30)
-
-%assign i 0
-%rep 256
-%if has_errcode(i)
-	error_isr i
-%else
-	isr i
-%endif
-%assign i i + 1
-%endrep
+global isr0
