@@ -126,6 +126,12 @@ void _start(void) {
 
     asm("sti");
 
+    // gemini: "avoid stack corruption by aligning it to 16 bytes before running interrupt"
+    // Align the stack to 16 bytes
+    uint64_t rsp_value;
+    asm volatile ("movq %%rsp, %0" : "=r" (rsp_value)); // Get current rsp
+    rsp_value &= -16;                                     // Align it
+    asm volatile ("movq %0, %%rsp" : : "r" (rsp_value)); // Set the aligned rsp
     asm ("int $0x02");
 
     hcf();

@@ -48,6 +48,7 @@ void idt_init() {
 
 void idt_reload() {
     terminal_write("[SYS/IDT] (Re)loading IDT...\n");
+    /*
     for (int i = 0; i < IDT_MAX_DESCRIPTORS; i++) {
         terminal_write("\t[SYS/IDT] IDT Descriptor ");
         terminal_write_dec(i);
@@ -59,7 +60,7 @@ void idt_reload() {
         terminal_write(" Attributes: ");
         terminal_write_hex(idt[i].attributes);
         terminal_write("\n");
-    }
+    }*/
     //idtr_t idt_ptr = {sizeof(idt) - 1, (uint64_t)idt};
     __asm__ volatile ("lidtq %0" : : "m"(idtr)); // load the new IDT
     terminal_write("OK\n");

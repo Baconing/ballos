@@ -45,7 +45,9 @@ extern isr_handler
 isr_common:
     pushall
     cld
+
     call isr_handler
+
     popall
     iretq
 
